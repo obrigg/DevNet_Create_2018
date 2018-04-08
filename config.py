@@ -19,4 +19,3 @@ PASS = 'cisco_1234!'
 PORT = '830'
 
 EXT_HOST = '10.10.20.48'
-
