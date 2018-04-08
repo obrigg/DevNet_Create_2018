@@ -1,12 +1,12 @@
 # DevNet_Create_2018
 
-NetDevOps Engineer Everyday Skills
+**NetDevOps Engineer Everyday Skills**
 
 This repo will include all the files needed for the DevNet Create 2018 Workshop.
 
 Do you want to learn how to write simple ChatOps apps for IOS XE network devices? This session will explore a few IOS XE device programmability capabilities to help you create your first ChatOps application using NETCONF, RESTCONF, and Guest Shell.
 
-This workshop requires:
+**This workshop requires:**
 
  - Cisco DevNet account
  - Spark account – sign up at https://www.ciscospark.com/
@@ -16,6 +16,7 @@ This workshop requires:
  - You will need Python 2.7 and 3.x installed
  - requests and ncclient libraries
 
+**The repo includes these files**
 
  - config.py - configuration file that includes account usernames and passwords
  - eem_cli_config.txt - cli configuration for the CSR1000V router that will be used during the workshop
@@ -23,7 +24,7 @@ This workshop requires:
  - netconf_restconf.py - demonstrate how to manage the IOS XE device from Guest Shell using NETCONF and RESTCONF
  - config_change.py - application code
  
- Application Workflow
+ **Application Workflow**
  
  - User makes IOS XE device configuration change
  - Syslog triggers EEM Guest Shell Python script execution
