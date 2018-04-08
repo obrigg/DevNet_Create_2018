@@ -5,7 +5,7 @@
 
 SPARK_URL = 'https://api.ciscospark.com/v1'
 SPARK_AUTH = 'Bearer ' + 'Put your Spark Token here'
-SPARK_ROOM = 'Config Change Alert' + 'your name'
+SPARK_ROOM = 'Config Change Alert ' + 'your name'
 SPARK_MEMBER = 'gzapodea@cisco.com'
 
 SNOW_URL = 'https://dev48476.service-now.com/api/now'
