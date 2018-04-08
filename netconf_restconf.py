@@ -41,4 +41,4 @@ def get_restconf_hostname():
 
 pprint(get_restconf_int_oper_data('GigabitEthernet1'))
 
-print(get_restconf_hostname())
+print('Device Hostname via RESTCONF: ', get_restconf_hostname())
