@@ -23,6 +23,7 @@ Do you want to learn how to write simple ChatOps apps for IOS XE network devices
  - save_base_config.py - script to establish the baseline configuration
  - netconf_restconf.py - demonstrate how to manage the IOS XE device from Guest Shell using NETCONF and RESTCONF
  - config_change.py - application code
+ - the workshop PowerPoint Presentation
  
  **Application Workflow**
  
