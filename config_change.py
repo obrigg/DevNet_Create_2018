@@ -244,4 +244,5 @@ if diff != '':
     comments += '\n\nConfiguration changed by user: ' + user_info + '\n\n' + approval_result
     create_incident('Configuration Change Notification', comments, SNOW_USER, 3)
 
+
 print('End Application Run')
