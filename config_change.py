@@ -201,7 +201,7 @@ if diff != '':
     post_room_message(spark_room_id, '   ')
     post_room_message(spark_room_id, 'Configuration changed by user ' + user_info)
     post_room_message(spark_room_id, 'Approve y/n ?')
-    counter = 6  # wait for approval = 10 seconds * counter, in this case 10 sec x 6 = 60 seconds
+    counter = 3  # wait for approval = 10 seconds * counter, in this case 10 sec x 6 = 60 seconds
     last_message = last_user_message(spark_room_id)
     # start approval process
     while last_message == 'Approve y/n ?':
