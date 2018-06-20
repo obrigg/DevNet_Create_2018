@@ -240,7 +240,8 @@ if diff != '':
     time.sleep(30)
     delete_room(spark_room_id)
 
-    comments = ('The device with the hostname: ' + device_name + ',\ndetected these configuration changes: \n' + diff + '\nConfiguration changed by user: ' + user_info + '\n' + approval_result)
+    comments = ('The device with the hostname: ' + device_name + ',\ndetected these configuration changes: \n' + diff
+    comments += '\n\nConfiguration changed by user: ' + user_info + '\n\n' + approval_result)
     create_incident('Configuration Change Notification', comments, SNOW_USER, 3)
 
 print('End Application Run')
