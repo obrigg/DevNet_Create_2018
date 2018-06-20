@@ -53,9 +53,9 @@ def compare_configs(cfg1, cfg2):
             if line.find('Last configuration change') == -1:
                 if (line.find('+++') == -1) and (line.find('---') == -1):
                     if (line.find('-!') == -1) and (line.find('+!') == -1):
-                       if line.startswith('+'):
+                        if line.startswith('+'):
                             diffstr = diffstr + '\n' + line
-                       elif line.startswith('-'):
+                        elif line.startswith('-'):
                             diffstr = diffstr + '\n' + line
 
     return diffstr
@@ -240,8 +240,8 @@ if diff != '':
     time.sleep(30)
     delete_room(spark_room_id)
 
-    comments = ('The device with the hostname: ' + device_name + ',\ndetected these configuration changes: \n' + diff
-    comments += '\n\nConfiguration changed by user: ' + user_info + '\n\n' + approval_result)
+    comments = 'The device with the hostname: ' + device_name + ',\ndetected these configuration changes: \n' + diff
+    comments += '\n\nConfiguration changed by user: ' + user_info + '\n\n' + approval_result
     create_incident('Configuration Change Notification', comments, SNOW_USER, 3)
 
 print('End Application Run')
