@@ -10,7 +10,6 @@ import json
 
 from config import SPARK_URL, SPARK_AUTH, SPARK_ROOM, SPARK_MEMBER
 from config import HOST, USER, PASS
-from config import SNOW_URL, SNOW_USER, SNOW_PASS
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests.auth import HTTPBasicAuth  # for Basic Auth
@@ -147,24 +146,6 @@ def get_user_sys_id(username):
     return user_json['result'][0]['sys_id']
 
 
-def create_incident(description, comment, username, severity):
-
-    # This function will create a new incident with the {description}, {comments}, severity for the {user}
-
-    caller_sys_id = get_user_sys_id(username)
-    print caller_sys_id
-    url = SNOW_URL + '/table/incident'
-    payload = {'short_description': description,
-               'comments': (comment + ', \nIncident created using APIs by caller ' + username),
-               'caller_id': caller_sys_id,
-               'urgency': severity
-               }
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
-    response = requests.post(url, auth=(SNOW_USER, SNOW_PASS), data=json.dumps(payload), headers=headers)
-    incident_json = response.json()
-    return incident_json['result']['number']
-
-
 # main application
 
 syslog_input = cli('show logging | in %SYS-5-CONFIG_I')
@@ -242,7 +223,6 @@ if diff != '':
 
     comments = 'The device with the hostname: ' + device_name + ',\ndetected these configuration changes: \n' + diff
     comments += '\n\nConfiguration changed by user: ' + user_info + '\n\n' + approval_result
-    create_incident('Configuration Change Notification', comments, SNOW_USER, 3)
 
 
 print('End Application Run')
