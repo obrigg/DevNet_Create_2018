@@ -114,7 +114,7 @@ def last_user_message(room_id):
 
     # retrieve the last message from the room with the room id
 
-    url = SPARK_URL + '/messages?roomId=' + room_id
+    url = SPARK_URL + '/messages?roomId=' + room_id + '&mentionedPeople=me'
     header = {'content-type': 'application/json', 'authorization': SPARK_AUTH}
     response = requests.get(url, headers=header, verify=False)
     list_messages_json = response.json()
@@ -133,17 +133,6 @@ def get_restconf_hostname():
     hostname_json = response.json()
     hostname = hostname_json['Cisco-IOS-XE-native:hostname']
     return hostname
-
-
-def get_user_sys_id(username):
-
-    # find the ServiceNow user_id for the specified user
-
-    url = SNOW_URL + '/table/sys_user?sysparm_limit=1&name=' + username
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
-    response = requests.get(url, auth=(SNOW_USER, SNOW_PASS), headers=headers)
-    user_json = response.json()
-    return user_json['result'][0]['sys_id']
 
 
 # main application
@@ -181,11 +170,11 @@ if diff != '':
     post_room_message(spark_room_id, diff)
     post_room_message(spark_room_id, '   ')
     post_room_message(spark_room_id, 'Configuration changed by user ' + user_info)
-    post_room_message(spark_room_id, 'Approve y/n ?')
+    post_room_message(spark_room_id, 'Approve y/n ? (mention me by @ !!)')
     counter = 6  # wait for approval = 10 seconds * counter, in this case 10 sec x 6 = 60 seconds
     last_message = last_user_message(spark_room_id)
     # start approval process
-    while last_message == 'Approve y/n ?':
+    while last_message == 'Approve y/n ? (mention me by @ !!)':
         time.sleep(10)
         last_message = last_user_message(spark_room_id)
         print(last_message)
@@ -220,9 +209,5 @@ if diff != '':
     post_room_message(spark_room_id, 'This room will be deleted in 30 seconds')
     time.sleep(30)
     delete_room(spark_room_id)
-
-    comments = 'The device with the hostname: ' + device_name + ',\ndetected these configuration changes: \n' + diff
-    comments += '\n\nConfiguration changed by user: ' + user_info + '\n\n' + approval_result
-
 
 print('End Application Run')
