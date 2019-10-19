@@ -8,7 +8,7 @@ import difflib
 import requests
 import json
 
-from config import SPARK_URL, SPARK_AUTH, SPARK_ROOM, SPARK_MEMBER
+from config import SPARK_URL, SPARK_AUTH, SPARK_ROOM, SPARK_MEMBERS
 from config import HOST, USER, PASS
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -168,7 +168,8 @@ if diff != '':
     device_name = get_restconf_hostname()
     print('Hostname: ', device_name)
     spark_room_id = create_room(SPARK_ROOM)
-    add_room_membership(spark_room_id, SPARK_MEMBER)
+    for SPARK_MEMBER in SPARK_MEMBERS:
+        add_room_membership(spark_room_id, SPARK_MEMBER)
     post_room_message(spark_room_id, 'The device with the hostname: ' + device_name + ', detected these configuration changes:')
     post_room_message(spark_room_id, diff)
     post_room_message(spark_room_id, '   ')
