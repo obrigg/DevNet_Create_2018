@@ -40,7 +40,7 @@ Do you want to learn how to write simple ChatOps apps for IOS XE network devices
    - Close the Spark room in 30 seconds
    - Create ServiceNow incident to record all the above information
 
-##Instructions
+## Instructions
 1) Enable IOX service:
 ```
 Cat9300#conf t
