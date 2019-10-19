@@ -119,7 +119,7 @@ conf t
 
 !
 event manager applet config_change
- event syslog pattern "SYS-5-CONFIG_I"
+ event syslog pattern "SYS-5-CONFIG_I" maxrun 240
  action 0 cli command "enable"
  action 1 cli command "guestshell run python /bootflash/WhatsOp/config_change.py"
  action 2 cli command "end"

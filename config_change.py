@@ -200,7 +200,7 @@ if diff != '':
         else:
             print("No valid response")
             counter = counter -1
-            post_room_message(spark_room_id, 'Approve y/n ? (mention me by @ !!)')
+            post_room_message(spark_room_id, 'Did not receive a valid response.\nApprove y/n ? (mention me by @ !!)')
             if counter == 0:
                 last_message = "Bye Bye"
                 cli('configure replace flash:/CONFIG_FILES/base-config force')
