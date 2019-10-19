@@ -9,8 +9,8 @@ SPARK_MEMBER = 'gzapodea@cisco.com'
 
 #dCloud general credentials
 USER = 'netadmin'
-PASS = 'C1sco12345!'
+PASS = 'C1sco12345'
 PORT = '830'
 
-HOST = '99.99.99.102'
-EXT_HOST = '99.99.99.102'
+HOST = '10.56.142.102'
+EXT_HOST = '10.56.142.102'

@@ -41,7 +41,7 @@ def get_restconf_hostname():
     hostname = hostname_json['Cisco-IOS-XE-native:hostname']
     return hostname
 
-pprint(get_restconf_int_oper_data('GigabitEthernet1'))
+pprint(get_restconf_int_oper_data('GigabitEthernet1%2F0%2F1'))
 
 print('Device Hostname via RESTCONF: ', get_restconf_hostname())
 

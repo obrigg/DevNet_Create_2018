@@ -14,7 +14,7 @@ from config import HOST, USER, PASS
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests.auth import HTTPBasicAuth  # for Basic Auth
 
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)  # Disable insecure https warnings
+requests.packages.urllib3.disable_warnings()      # Disable warnings. Living on the wild side..
 
 
 ROUTER_AUTH = HTTPBasicAuth(USER, PASS)
@@ -119,8 +119,11 @@ def last_user_message(room_id):
     response = requests.get(url, headers=header, verify=False)
     list_messages_json = response.json()
     list_messages = list_messages_json['items']
-    last_message = list_messages[0]['text']
-    return last_message
+    if len(list_messages) == 0:
+        return ("")
+    else:
+        last_message = list_messages[0]['text']
+        return (last_message)
 
 
 def get_restconf_hostname():
@@ -172,37 +175,38 @@ if diff != '':
     post_room_message(spark_room_id, 'Configuration changed by user ' + user_info)
     post_room_message(spark_room_id, 'Approve y/n ? (mention me by @ !!)')
     counter = 6  # wait for approval = 10 seconds * counter, in this case 10 sec x 6 = 60 seconds
-    last_message = last_user_message(spark_room_id)
+    last_message = ""
     # start approval process
-    while last_message == 'Approve y/n ? (mention me by @ !!)':
+    while (last_message != "Bye Bye") and (last_message != "Israel n") and (last_message != "Israel y"):
         time.sleep(10)
         last_message = last_user_message(spark_room_id)
         print(last_message)
-        if last_message == 'n':
+        if last_message == 'Israel n':
             cli('configure replace flash:/CONFIG_FILES/base-config force')
             approval_result = 'Configuration changes not approved, Configuration rollback to baseline'
             print('Configuration roll back completed')
-            break
+
+        elif last_message == 'Israel y':
+            print('Configuration change approved')
+            # save new baseline running configuration
+            output = cli('show run')
+            filename = '/bootflash/CONFIG_FILES/base-config'
+            f = open(filename, "w")
+            f.write(output)
+            f.close
+            print('Saved new baseline configuration')
+            approval_result = 'Configuration changes approved, Saved new baseline configuration'
+
         else:
-            if last_message == 'y':
-                print('Configuration change approved')
-                # save new baseline running configuration
-                output = cli('show run')
-                filename = '/bootflash/CONFIG_FILES/base-config'
-                f = open(filename, "w")
-                f.write(output)
-                f.close
-                print('Saved new baseline configuration')
-                approval_result = 'Configuration changes approved, Saved new baseline configuration'
-                break
-            else:
-                counter -= 1
-                post_room_message(spark_room_id, 'Approve y/n ?')
-                if counter == 0:
-                    cli('configure replace flash:/CONFIG_FILES/base-config force')
-                    approval_result = 'Approval request timeout, Configuration rollback to baseline'
-                    print('Configuration roll back completed')
-                    break
+            print("No valid response")
+            counter = counter -1
+            post_room_message(spark_room_id, 'Approve y/n ? (mention me by @ !!)')
+            if counter == 0:
+                last_message = "Bye Bye"
+                cli('configure replace flash:/CONFIG_FILES/base-config force')
+                approval_result = 'Approval request timeout, Configuration rollback to baseline'
+                print('Configuration roll back completed')
+
 
     post_room_message(spark_room_id, approval_result)
 
