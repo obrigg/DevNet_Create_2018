@@ -110,6 +110,16 @@ def post_room_message(room_id, message):
     requests.post(url, data=json.dumps(payload), headers=header, verify=False)
 
 
+def post_room_markdown(room_id, message):
+
+    # post message to the Spark room with the room id
+
+    payload = {'roomId': room_id, 'markdown': message}
+    url = SPARK_URL + '/messages'
+    header = {'content-type': 'application/json', 'authorization': SPARK_AUTH}
+    requests.post(url, data=json.dumps(payload), headers=header, verify=False)
+
+
 def last_user_message(room_id):
 
     # retrieve the last message from the room with the room id
@@ -126,24 +136,13 @@ def last_user_message(room_id):
         return (last_message)
 
 
-def get_restconf_hostname():
-
-    # retrieve using RETSCONF the network device hostname
-
-    url = 'https://' + HOST + '/restconf/data/Cisco-IOS-XE-native:native/hostname'
-    header = {'Content-type': 'application/yang-data+json', 'accept': 'application/yang-data+json'}
-    response = requests.get(url, headers=header, verify=False, auth=ROUTER_AUTH)
-    hostname_json = response.json()
-    hostname = hostname_json['Cisco-IOS-XE-native:hostname']
-    return hostname
-
-
 # main application
 
 syslog_input = cli('show logging | in %SYS-5-CONFIG_I')
 syslog_lines = syslog_input.split('\n')
 lines_no = len(syslog_lines)-2
 user_info = syslog_lines[lines_no]
+user = user_info.split()[user_info.split().index('by')+1]
 
 old_cfg_fn = '/bootflash/CONFIG_FILES/base-config'
 new_cfg_fn = save_config()
@@ -165,16 +164,14 @@ f.close
 
 if diff != '':
     # find the device hostname using RESTCONF
-    device_name = get_restconf_hostname()
-    print('Hostname: ', device_name)
+    device_name = cli('show run | inc hostname ').split()[1]
+    print('Hostname: ' + device_name)
     spark_room_id = create_room(SPARK_ROOM)
     for SPARK_MEMBER in SPARK_MEMBERS:
         add_room_membership(spark_room_id, SPARK_MEMBER)
-    post_room_message(spark_room_id, 'The device with the hostname: ' + device_name + ', detected these configuration changes:')
+    post_room_markdown(spark_room_id, 'Hello <@all>,  \n# Configuration change detected!**  \nDevice hostname: **' + device_name + '**, detected the following changes made by user: **' +  user + '**.')
     post_room_message(spark_room_id, diff)
-    post_room_message(spark_room_id, '   ')
-    post_room_message(spark_room_id, 'Configuration changed by user ' + user_info)
-    post_room_message(spark_room_id, 'Approve y/n ? (mention me by @ !!)')
+    post_room_markdown(spark_room_id, 'Do you approve these changes?  \nMention me using **@Israel** and enter "**y**" or "**n**".')
     counter = 6  # wait for approval = 10 seconds * counter, in this case 10 sec x 6 = 60 seconds
     last_message = ""
     # start approval process
@@ -184,7 +181,7 @@ if diff != '':
         print(last_message)
         if last_message == 'Israel n':
             cli('configure replace flash:/CONFIG_FILES/base-config force')
-            approval_result = 'Configuration changes not approved, Configuration rollback to baseline'
+            approval_result = '- - -  \n<@all>,  \nConfiguration changes **not approved**, Configuration rollback to baseline'
             print('Configuration roll back completed')
 
         elif last_message == 'Israel y':
@@ -196,20 +193,20 @@ if diff != '':
             f.write(output)
             f.close
             print('Saved new baseline configuration')
-            approval_result = 'Configuration changes approved, Saved new baseline configuration'
+            approval_result = '- - -  \n<@all>,  \nConfiguration changes **approved**, Saved new baseline configuration'
 
         else:
             print("No valid response")
             counter = counter -1
-            post_room_message(spark_room_id, 'Did not receive a valid response.\nApprove y/n ? (mention me by @ !!)')
+            post_room_markdown(spark_room_id, '- - -  \n<@all>, I did not receive a valid responce. **' + str(counter) + ' attempts left**.  \nDo you approve these changes?  \nMention me using **@Israel** and enter "**y**" or "**n**".')
             if counter == 0:
                 last_message = "Bye Bye"
                 cli('configure replace flash:/CONFIG_FILES/base-config force')
-                approval_result = 'Approval request timeout, Configuration rollback to baseline'
+                approval_result = '<@all>,  \nApproval request **timeout**, Configuration rollback to baseline'
                 print('Configuration roll back completed')
 
 
-    post_room_message(spark_room_id, approval_result)
+    post_room_markdown(spark_room_id, approval_result)
 
     post_room_message(spark_room_id, 'This room will be deleted in 30 seconds')
     time.sleep(30)

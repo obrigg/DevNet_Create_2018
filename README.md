@@ -6,7 +6,7 @@
 
 This repo will include all the files needed for the DevNet Create 2018 Workshop.
 
-Do you want to learn how to write simple ChatOps apps for IOS XE network devices? This session will explore a few IOS XE device programmability capabilities to help you create your first ChatOps application using NETCONF, RESTCONF, and Guest Shell.
+Do you want to learn how to write simple ChatOps apps for IOS XE network devices? This session will explore a few IOS XE device programmability capabilities to help you create your first WhatsOp application using Guest Shell.
 
 **This workshop requires:**
 
@@ -22,7 +22,6 @@ Do you want to learn how to write simple ChatOps apps for IOS XE network devices
  - config.py - configuration file that includes account usernames and passwords
  - eem_cli_config.txt - cli configuration for the CSR1000V router that will be used during the workshop
  - save_base_config.py - script to establish the baseline configuration
- - netconf_restconf.py - demonstrate how to manage the IOS XE device from Guest Shell using NETCONF and RESTCONF
  - config_change.py - application code
  - the workshop PowerPoint Presentation
 
@@ -32,7 +31,7 @@ Do you want to learn how to write simple ChatOps apps for IOS XE network devices
  - Syslog triggers EEM Guest Shell Python script execution
  - The config_change.py script will:
    - Detect if a configuration change and what changed
-   - Collect the device hostname using RESTCONF
+   - Collect the device hostname
    - Identify the user the made the change using Python CLI
    - Create Spark room using REST APIs, invite Approver to room, post the above information to ask for approval
    - If changes approved, save new configuration as baseline
@@ -79,15 +78,11 @@ guestshell                       RUNNING
 ```
 6) If proxy is required:
 You can create proxy_vars.sh file locally and copy it to switch flash, or use guestshell and VI editor to create file directly on the switch.
-If using a proxy - make sure to bypass the switch/router itself (RESTCONF will use HTTPS)
 ```
 export http_proxy=http://10.100.100.1:8080
 export https_proxy=http://10.100.100.1:8080
-export ftp_proxy=http://10.100.100.1:8080
 export HTTP_PROXY=http://10.100.100.1:8080
 export HTTPS_PROXY=http://10.100.100.1:8080
-export FTP_PROXY=http://10.100.100.1:8080
-export no_proxy='99.99.99.102'
 ```
 also assure that these variables are loaded each time guestshell is executed by adding to file .bashrc (sudo vi .bashrc) the following line:
 ```
@@ -125,15 +120,7 @@ remote: Compressing objects: 100% (9/9), done.
 remote: Total 80 (delta 2), reused 0 (delta 0), pack-reused 71
 Unpacking objects: 100% (80/80), done.
 ```
-11) Enable RESTCONF on the switch/router:
-```
-conf t
-
-restconf
-ip http secure-server
-end
-```
-12) Prepare to Execute 1st Time the App:
+11) Prepare to Execute 1st Time the App (creating the initial base-config):
 ```
 Cat9300#write mem
 Cat9300#guestshell run bash
@@ -147,11 +134,11 @@ WhatsOp
 [guestshell@guestshell bootflash]$ cd WhatsOp
 [guestshell@guestshell WhatsOp]$ python save_base_config.py
 ```
-13) Edit the config.py file with your details:
+12) Edit the config.py file with your details:
 ```
 sudo vi config.py
 ```
-14) Create the triggering EEM script:
+13) Create the triggering EEM script:
 ```
 conf t
 
@@ -160,7 +147,7 @@ event manager applet config_change
 event syslog pattern "SYS-5-CONFIG_I" maxrun 240
 action 0 cli command "enable"
 action 1 cli command "guestshell run python /bootflash/WhatsOp/config_change.py"
-action 2 cli command "end"
+action 2 cli command "exit"
 action 3 cli command "exit"
 !
 End
