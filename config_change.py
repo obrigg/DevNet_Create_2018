@@ -100,21 +100,11 @@ def delete_room(room_id):
     print('\nDeleted Spark Team :  ', room_id)
 
 
-def post_room_message(room_id, message):
+def post_room_message(room_id, message, markdown):
 
     # post message to the Spark room with the room id
 
-    payload = {'roomId': room_id, 'text': message}
-    url = SPARK_URL + '/messages'
-    header = {'content-type': 'application/json', 'authorization': SPARK_AUTH}
-    requests.post(url, data=json.dumps(payload), headers=header, verify=False)
-
-
-def post_room_markdown(room_id, message):
-
-    # post message to the Spark room with the room id
-
-    payload = {'roomId': room_id, 'markdown': message}
+    payload = {'roomId': room_id, 'text': message, 'markdown': markdown}
     url = SPARK_URL + '/messages'
     header = {'content-type': 'application/json', 'authorization': SPARK_AUTH}
     requests.post(url, data=json.dumps(payload), headers=header, verify=False)
@@ -169,9 +159,9 @@ if diff != '':
     spark_room_id = create_room(SPARK_ROOM)
     for SPARK_MEMBER in SPARK_MEMBERS:
         add_room_membership(spark_room_id, SPARK_MEMBER)
-    post_room_markdown(spark_room_id, 'Hello <@all>,  \n# Configuration change detected!**  \nDevice hostname: **' + device_name + '**, detected the following changes made by user: **' +  user + '**.')
-    post_room_message(spark_room_id, diff)
-    post_room_markdown(spark_room_id, 'Do you approve these changes?  \nMention me using **@Israel** and enter "**y**" or "**n**".')
+    post_room_message(spark_room_id, '', 'Hello <@all>,  \n# Configuration change detected!**  \nDevice hostname: **' + device_name + '**, detected the following changes made by user: **' +  user + '**.')
+    post_room_message(spark_room_id, diff, '')
+    post_room_message(spark_room_id, '', 'Do you approve these changes?  \nMention me using **@Israel** and enter "**y**" or "**n**".')
     counter = 6  # wait for approval = 10 seconds * counter, in this case 10 sec x 6 = 60 seconds
     last_message = ""
     # start approval process
@@ -198,7 +188,7 @@ if diff != '':
         else:
             print("No valid response")
             counter = counter -1
-            post_room_markdown(spark_room_id, '- - -  \n<@all>, I did not receive a valid responce. **' + str(counter) + ' attempts left**.  \nDo you approve these changes?  \nMention me using **@Israel** and enter "**y**" or "**n**".')
+            post_room_message(spark_room_id, '', '- - -  \n<@all>, I did not receive a valid responce. **' + str(counter) + ' attempts left**.  \nDo you approve these changes?  \nMention me using **@Israel** and enter "**y**" or "**n**".')
             if counter == 0:
                 last_message = "Bye Bye"
                 cli('configure replace flash:/CONFIG_FILES/base-config force')
@@ -206,9 +196,9 @@ if diff != '':
                 print('Configuration roll back completed')
 
 
-    post_room_markdown(spark_room_id, approval_result)
+    post_room_message(spark_room_id, '', approval_result)
 
-    post_room_message(spark_room_id, 'This room will be deleted in 30 seconds')
+    post_room_message(spark_room_id, 'This room will be deleted in 30 seconds', '')
     time.sleep(30)
     delete_room(spark_room_id)
 
