@@ -1,5 +1,5 @@
 import requests
-from config import SPARK_URL, SPARK_AUTH, SPARK_ROOM, SPARK_MEMBER
+from config import SPARK_URL, SPARK_AUTH, SPARK_ROOM, SPARK_MEMBERS
 requests.packages.urllib3.disable_warnings()      # Disable warnings. Living on the wild side..
 
 def delete_room(room_id):
