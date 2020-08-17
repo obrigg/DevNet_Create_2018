@@ -1,16 +1,4 @@
-# developed by Gabi Zapodeanu, TSA, GPO, Cisco Systems
-
-# This file contains the Spark Auth, network device info
-
-SPARK_URL = 'https://api.ciscospark.com/v1'
-SPARK_AUTH = 'Bearer ' + 'Put your Spark Token here'
-SPARK_ROOM = 'Config Change Alert ' + 'your name'
-SPARK_MEMBERS = ['gzapodea@cisco.com']
-
-#dCloud general credentials
-USER = 'netadmin'
-PASS = 'C1sco12345'
-PORT = '830'
-
-HOST = '10.56.142.102'
-EXT_HOST = '10.56.142.102'
+WEBEX_TEAMS_ACCESS_TOKEN = 'Put your Spark Token here, without the Bearer'
+WEBEX_TEAMS_ROOM = 'Config Change Alert ' + 'your name'
+WEBEX_TEAMS_MEMBERS = ['obrigg@cisco.com']
+PROXY = {'https': 'http://proxy.esl.cisco.com:80'}

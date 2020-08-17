@@ -1,6 +1,6 @@
 # WhatsOp Change Management
 
-## This is an altered copy of Gabi Zapodeanu's code (see https://github.com/zapodeanu/DevNet_Create_2018)
+Credit: Gabi Zapodeanu (see https://github.com/zapodeanu/DevNet_Create_2018)
 
 **NetDevOps Engineer Everyday Skills**
 
@@ -11,11 +11,11 @@ Do you want to learn how to write simple ChatOps apps for IOS XE network devices
 **This workshop requires:**
 
  - Cisco DevNet account
- - Spark account – sign up at https://www.ciscospark.com/
+ - Webex Teams account – sign up at https://teams.webex.com/
  - GitHub account
  - DevNet CSR1000V sandbox – provided, or reserved by you here: https://developer.cisco.com/site/sandbox/
- - You will need Python 2.7 and 3.x installed
- - requests library
+ - You will need Python 3.x installed
+ - Webex Teams SDK
 
 **The repo includes these files**
 
@@ -33,11 +33,10 @@ Do you want to learn how to write simple ChatOps apps for IOS XE network devices
    - Detect if a configuration change and what changed
    - Collect the device hostname
    - Identify the user the made the change using Python CLI
-   - Create Spark room using REST APIs, invite Approver to room, post the above information to ask for approval
+   - Create Webex Teams room using REST APIs, invite Approver to room, post the above information to ask for approval
    - If changes approved, save new configuration as baseline
    - If not approved or no response, rollback to the previous baseline configuration
-   - Close the Spark room in 30 seconds
-   - Create ServiceNow incident to record all the above information
+   - Close the Webex Teams room in 30 seconds
 
 ## Instructions
 1) Enable IOX service:
@@ -98,12 +97,11 @@ nameserver 172.18.108.43
 ! to save press Esc and then combination :wq!
 "/etc/resolv.conf" 1L, 25C written
 ```
-8) Install Python's requests library:
+8) Install Python's Webex Teams SDK:
 ```
-[guestshell@guestshell ~]$ sudo pip install requests --proxy <PROXY IF RELEVANT>
+[guestshell@guestshell ~]$ sudo pip install webexteamssdk --proxy <PROXY IF RELEVANT>
 Collecting requests
 ...
-Installing collected packages: chardet, idna, urllib3, certifi, requests
 ```
 9) Install Git on Guestshell:
 ```
@@ -111,8 +109,8 @@ Installing collected packages: chardet, idna, urllib3, certifi, requests
 ```
 10) Clone the repo to the switch/router:
 ```
-[guestshell@guestshell ~]$ cd /bootflash/
-[guestshell@guestshell bootflash]$ git clone https://github.com/obrigg/WhatsOp.git
+[guestshell@guestshell ~]$ cd /bootflash/guest-share/
+[guestshell@guestshell guest-share]$ git clone https://github.com/obrigg/WhatsOp.git
 Cloning into 'WhatsOp'...
 remote: Enumerating objects: 9, done.
 remote: Counting objects: 100% (9/9), done.
@@ -124,14 +122,14 @@ Unpacking objects: 100% (80/80), done.
 ```
 Cat9300#write mem
 Cat9300#guestshell run bash
-[guestshell@guestshell ~]$ cd /bootflash/
-[guestshell@guestshell bootflash]$ mkdir CONFIG_FILES
-[guestshell@guestshell bootflash]$ ls
+[guestshell@guestshell ~]$ cd /bootflash/guest-share
+[guestshell@guestshell guest-share]$ mkdir CONFIG_FILES
+[guestshell@guestshell guest-share]$ ls
 CONFIG_FILES                
 WhatsOp
 …
 
-[guestshell@guestshell bootflash]$ cd WhatsOp
+[guestshell@guestshell guest-share]$ cd WhatsOp
 [guestshell@guestshell WhatsOp]$ python save_base_config.py
 ```
 12) Edit the config.py file with your details:
@@ -146,7 +144,7 @@ conf t
 event manager applet config_change
 event syslog pattern "SYS-5-CONFIG_I" maxrun 240
 action 0 cli command "enable"
-action 1 cli command "guestshell run python /bootflash/WhatsOp/config_change.py"
+action 1 cli command "guestshell run python /bootflash/guest-share/WhatsOp/config_change.py"
 action 2 cli command "exit"
 action 3 cli command "exit"
 !
