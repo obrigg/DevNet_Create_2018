@@ -13,7 +13,8 @@ from config import *
 
 def save_config():
     # save running configuration, use local time to create new config file name
-    output = cli('show run')
+    run = cli('show run')
+    output = run[run.find('!'):len(run)]
     timestr = time.strftime('%Y%m%d-%H%M%S')
     filename = '/bootflash/guest-share/CONFIG_FILES/' + timestr + '_shrun'
     f = open(filename, 'w')
